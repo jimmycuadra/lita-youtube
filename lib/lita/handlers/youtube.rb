@@ -22,7 +22,10 @@ module Lita
 
       def get_video_data_and_respond(video_id, response)
         title, time = video_data(video_id)
-        response.reply "#{title} (#{time})"
+
+        if title && time
+          response.reply "#{title} (#{time})"
+        end
       end
 
       def extract_video_id(url)
@@ -31,12 +34,21 @@ module Lita
       end
 
       def video_data(video_id)
+        Lita.logger.info("Requesting data for YouTube video #{video_id}.")
+
         response = http.get("#{API_URL}#{video_id}", alt: "json")
-        data = MultiJson.load(response.body)
-        entry = data["entry"]
-        title = entry["title"]["$t"]
-        time = format_time(entry["media$group"]["yt$duration"]["seconds"])
-        [title, time]
+
+        if response.status == 200
+          data = MultiJson.load(response.body)
+          entry = data["entry"]
+          title = entry["title"]["$t"]
+          time = format_time(entry["media$group"]["yt$duration"]["seconds"])
+          [title, time]
+        else
+          Lita.logger.error(
+            "YouTube API returned status code #{response.status}."
+          )
+        end
       end
 
       def format_time(seconds)

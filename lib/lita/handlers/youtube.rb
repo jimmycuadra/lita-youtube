@@ -6,7 +6,7 @@ module Lita
     class Youtube < Handler
       API_URL = "http://gdata.youtube.com/feeds/api/videos/"
 
-      route(%r{(https?://www\.youtube\.com\/watch\?[^\s]+?)}i, :query_string)
+      route(%r{(https?://www\.youtube\.com\/watch\?[^\s]+)}i, :query_string)
       route(%r{(https?://youtu\.be/)([a-z0-9\-_]+)}i, :short_link)
 
       def query_string(response)
@@ -30,7 +30,7 @@ module Lita
 
       def extract_video_id(url)
         url = URI.parse(url)
-        Rack::Utils.parse_nested_query(url.query)
+        Rack::Utils.parse_nested_query(url.query)["v"]
       end
 
       def video_data(video_id)

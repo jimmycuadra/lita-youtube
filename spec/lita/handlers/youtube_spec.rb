@@ -13,23 +13,23 @@ SHORT_DURATION_JSON = File.read(
 ).chomp
 
 describe Lita::Handlers::Youtube, lita_handler: true do
-  it { routes("http://www.youtube.com/watch?v=dMH0bHeiRNg").to(:query_string) }
-  it { routes("https://www.youtube.com/watch?v=dMH0bHeiRNg").to(:query_string) }
+  it { is_expected.to route("http://www.youtube.com/watch?v=dMH0bHeiRNg").to(:query_string) }
+  it { is_expected.to route("https://www.youtube.com/watch?v=dMH0bHeiRNg").to(:query_string) }
 
   it do
-    routes(
+    is_expected.to route(
       "http://www.youtube.com/watch?feature=player_embedded&v=dMH0bHeiRNg"
     ).to(:query_string)
   end
 
   it do
-    routes(
+    is_expected.to route(
       "check this out! http://www.youtube.com/watch?v=dMH0bHeiRNg - it's great!"
     ).to(:query_string)
   end
 
-  it { routes("http://youtu.be/dMH0bHeiRNg").to(:short_link) }
-  it { routes("https://youtu.be/dMH0bHeiRNg").to(:short_link) }
+  it { is_expected.to route("http://youtu.be/dMH0bHeiRNg").to(:short_link) }
+  it { is_expected.to route("https://youtu.be/dMH0bHeiRNg").to(:short_link) }
 
   describe "#query_string" do
     it "replies with the video's title and duration" do
